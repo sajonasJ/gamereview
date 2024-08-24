@@ -11,7 +11,6 @@
 <body>
     <div class='container-body'>
         @yield('header')
-        @yield('nav')
         <main>
             @yield('content')
         </main>

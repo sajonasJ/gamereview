@@ -7,7 +7,7 @@
 @endsection
 
 @section('content')
-    <main class='about-content'>
+    <main class='home-content'>
         <p>Welcome to the homepage!</p>
         <p>this includes the description of the website</p>
         <p>objective of the website</p>
