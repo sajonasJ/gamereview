@@ -8,10 +8,12 @@
 
 @section('content')
     <main class='home-content'>
-        <p>Welcome to the homepage!</p>
-        <p>this includes the description of the website</p>
-        <p>objective of the website</p>
-        <p>information about the author</p>
+       <p>home</p>
+       <p>list all item reviews</p>
+       <p>should show all stars per review</p>
+       <p>should show the number of comments per review</p>
+       <p>show names of the items</p>
+       <p>show picture of the item</p>
     </main>
 @endsection
 

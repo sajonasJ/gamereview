@@ -8,10 +8,13 @@
 
 @section('content')
     <main class='manufacturer-content'>
-        <p>Welcome to the homepage!</p>
-        <p>this includes the description of the website</p>
-        <p>objective of the website</p>
-        <p>information about the author</p>
+        <p>manufacturer</p>
+        <p>list all manufacturers</p>
+        <p>manufacturer image</p>
+        <p>manufacturer name</p>
+        <p>stars for each manufacturer</p>
+        <p>number of items</p>
+        <p>number of reviews</p>
     </main>
 @endsection
 
