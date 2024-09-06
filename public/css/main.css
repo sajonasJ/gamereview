@@ -1,0 +1,40 @@
+
+.nav-container {
+    width: 280px;
+    transition: width 0.3s ease;
+    position: relative;
+}
+
+.nav-container.collapsed {
+    width: 80px;
+}
+
+.nav-text, #nav-title {
+    transition: opacity 0.3s ease;
+}
+
+.nav-container.collapsed .nav-text,
+.nav-container.collapsed #nav-title {
+    opacity: 0;
+    pointer-events: none; 
+}
+
+.toggle-btn {
+    top: 10px;
+    background-color: #2C2F33;
+    border: none;
+    color: white;
+    padding: 5px;
+    cursor: pointer;
+    border-radius: 50%;
+    transition: transform 0.3s ease;
+}
+
+.toggle-btn.collapsed {
+    right: 10px;
+}
+
+/* Rotate the icon inside the toggle button */
+#toggle-icon.collapsed {
+    transform: rotate(180deg);
+}

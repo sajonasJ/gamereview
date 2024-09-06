@@ -1,23 +1,10 @@
-<div class='footer-container'>
-    <p>This website is created by Jonas Sajonas @2024 for Course Web Application Development</p>
-    <p>For more information: Contact numbers are available</p>
-    <p>jonas.sajonas@griffithuni.edu.au</p>
-    <p>Gold Coast, Queensland, Australia</p>
-</div>
+<footer
+    class="footer-container bottom text-bg-dark d-flex flex-wrap justify-content-between align-items-center py-3 border-top">
+    <p class="col-md-4 mb-0 text-white">This website is created by Jonas Sajonas @2024 for Course Web
+        Application Development</p>
+    <p class="col-md-4 mb-0 text-white">For more information: Contact numbers are available</p>
+    <p class="col-md-4 mb-0 text-white">jonas.sajonas@griffithuni.edu.au</p>
+    <p class="col-md-4 mb-0 ttext-white">Gold Coast, Queensland, Australia</p>
 
 
-<footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
-    <p class="col-md-4 mb-0 text-body-secondary">© 2024 Company, Inc</p>
-
-    <a href="/" class="col-md-4 d-flex align-items-center justify-content-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
-      <svg class="bi me-2" width="40" height="32"><use xlink:href="#bootstrap"></use></svg>
-    </a>
-
-    <ul class="nav col-md-4 justify-content-end">
-      <li class="nav-item"><a href="#" class="nav-link px-2 text-body-secondary">Home</a></li>
-      <li class="nav-item"><a href="#" class="nav-link px-2 text-body-secondary">Features</a></li>
-      <li class="nav-item"><a href="#" class="nav-link px-2 text-body-secondary">Pricing</a></li>
-      <li class="nav-item"><a href="#" class="nav-link px-2 text-body-secondary">FAQs</a></li>
-      <li class="nav-item"><a href="#" class="nav-link px-2 text-body-secondary">About</a></li>
-    </ul>
-  </footer>
+</footer>
