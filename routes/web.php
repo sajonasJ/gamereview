@@ -10,6 +10,30 @@ const MANUFACTURER = '/manufacturerPage';
 const REVIEW = '/reviewPage';
 const PAGES = 'pages';
 
+$gameData = [
+    'Ubisoft' => [
+        'Assassins Creed Valhalla',
+        'Far Cry 6',
+        'The Crew Motorfest',
+        'Assassins Creed Mirage',
+        'Skull and Bones',
+        'Star Wars Outlaws'
+    ],
+    'Activision Blizzard' => [
+        'World of Warcraft',
+        'Diablo III',
+        'StarCraft',
+        'Diablo',
+        'Diablo II',
+        'Warcraft III'
+    ],
+    'Riot Games' => [
+        'League of Legends',
+        'Teamfight Tactics',
+        'Valorant',
+        'League of Legends Wild Rift'
+    ]
+];
 
 
 
