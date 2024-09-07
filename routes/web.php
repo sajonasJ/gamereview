@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Route;
 
 require_once app_path('Functions/ItemFunctions.php');
 
@@ -10,51 +12,58 @@ const MANUFACTURER = '/manufacturerPage';
 const REVIEW = '/reviewPage';
 const PAGES = 'pages';
 
-$gameData = [
-    'Ubisoft' => [
-        'Assassins Creed Valhalla',
-        'Far Cry 6',
-        'The Crew Motorfest',
-        'Assassins Creed Mirage',
-        'Skull and Bones',
-        'Star Wars Outlaws'
-    ],
-    'Activision Blizzard' => [
-        'World of Warcraft',
-        'Diablo III',
-        'StarCraft',
-        'Diablo',
-        'Diablo II',
-        'Warcraft III'
-    ],
-    'Riot Games' => [
-        'League of Legends',
-        'Teamfight Tactics',
-        'Valorant',
-        'League of Legends Wild Rift'
-    ]
-];
+const GET_ITEMS =
+"SELECT items.name, items.ave_rating, items.review_count, manufacturers.name AS manufacturer_name, reviews.rating
+FROM items, manufacturers, reviews
+WHERE items.manufacturer = manufacturers.id
+AND items.id = reviews.item_id";
+
+const GET_MANUFACTURERS_LIST =
+"SELECT name
+FROM manufacturers";
+
+const GET_REVIEWS =
+"SELECT items.*, manufacturers.name AS manufacturer_name
+FROM items, manufacturers
+WHERE items.manufacturer = manufacturers.id
+AND items.name = 'Assassins Creed Valhalla'";
+
+const GET_MANUFACTURER =
+"SELECT items.*, manufacturers.name AS manufacturer_name
+FROM items, manufacturers
+WHERE items.manufacturer = manufacturers.id
+AND manufacturers.name = 'Ubisoft'";
 
 
+$renderHomePage = function () {
+    $sql = GET_ITEMS;
+    $items = DB::select($sql);
+    return view(PAGES . HOME)->with('items', $items);
+};
 
-use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view(PAGES . HOME);
-});
-Route::get(HOME, function () {
-    return view(PAGES . HOME);
-});
+Route::get('/', $renderHomePage);
+Route::get(HOME, $renderHomePage);
+
 
 Route::get(MANUFACTURER_LIST, function () {
-    return view(PAGES . MANUFACTURER_LIST);
+    $sql = GET_MANUFACTURERS_LIST;
+    $manufacturers = DB::select($sql);
+    dd($manufacturers);
+    return view(PAGES . MANUFACTURER_LIST)->with('manufacturers', $manufacturers);
 });
 
 Route::get(MANUFACTURER, function () {
+    $sql = GET_MANUFACTURER;
+    $manufacturer = DB::select($sql);
+    dd($manufacturer);
     return view(PAGES . MANUFACTURER);
 });
 Route::get(REVIEW, function () {
-    return view(PAGES . REVIEW);
+    $sql = GET_REVIEWS;
+    $reviews = DB::select($sql);
+    dd($reviews);
+    return view(PAGES . REVIEW)->with('reviews', $reviews);
 });
 
 
@@ -65,16 +74,36 @@ function logMessage($message)
 
 // Additional routes to test the functions
 Route::get('/create-item', function () {
-    createItem();  // Function from ItemFunctions.php
+    createItem();
     return 'Item Created';
 });
 
 Route::get('/delete-item', function () {
-    deleteItem();  // Function from ItemFunctions.php
+    deleteItem();
     return 'Item Deleted';
 });
 
 Route::get('/update-item', function () {
-    updateItem();  // Function from ItemFunctions.php
+    updateItem();
     return 'Item Updated';
 });
+
+
+// function db_open()
+// {
+//     try {
+//         $db = new PDO('sqlite:db/test.sqlite');
+//         $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+//     } catch (PDOException $e) {
+//         die("Error!: " . $e->getMessage());
+//     }
+//     return  $db;
+// }
+
+// Route::get('/test', function () {
+//     $sql = "SELECT * FROM items";
+//     $items = DB::select($sql);
+//    return view()
+// }
+// );
+// 
