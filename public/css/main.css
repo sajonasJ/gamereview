@@ -3,6 +3,7 @@
     width: 280px;
     transition: width 0.3s ease;
     position: relative;
+    border-radius: 0 15px 15px 0; 
 }
 
 .nav-container.collapsed {
@@ -13,28 +14,30 @@
     transition: opacity 0.3s ease;
 }
 
+.nav-link{
+    height: 50px;
+}
+
 .nav-container.collapsed .nav-text,
 .nav-container.collapsed #nav-title {
     opacity: 0;
     pointer-events: none; 
+    visibility: hidden;
+    transition: transform 0.3s ease; 
+}
+.btn-container{
+    display: flex;
+    justify-content: flex-end;
 }
 
 .toggle-btn {
-    top: 10px;
     background-color: #2C2F33;
     border: none;
     color: white;
     padding: 5px;
     cursor: pointer;
     border-radius: 50%;
-    transition: transform 0.3s ease;
-}
-
-.toggle-btn.collapsed {
-    right: 10px;
-}
-
-/* Rotate the icon inside the toggle button */
-#toggle-icon.collapsed {
+    transition: transform 0.3s ease; 
     transform: rotate(180deg);
 }
+
