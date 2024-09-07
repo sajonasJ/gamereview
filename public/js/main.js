@@ -1,21 +1,14 @@
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener("DOMContentLoaded", () => {
+    const toggleBtn = document.getElementById("toggle-btn");
+    const navContainer = document.getElementById("nav-container");
 
-    // Ensure toggle button exists before attaching event listener
-    const toggleButton = document.getElementById('toggle-btn');
-    if (toggleButton) {
-        toggleButton.addEventListener('click', function () {
+    toggleBtn.addEventListener("click", () => {
+        const toggleI = toggleBtn.querySelector("i");
 
-            let navContainer = document.getElementById('nav-container');
-            let toggleIcon = document.getElementById('toggle-icon');
+        navContainer.classList.toggle("collapsed");
 
-            navContainer.classList.toggle('collapsed');
-            toggleIcon.classList.toggle('collapsed');
-
-            if (toggleIcon.innerHTML === '&gt;') {
-                toggleIcon.innerHTML = '&lt;';
-            } else {
-                toggleIcon.innerHTML = '&gt;';
-            }
-        });
-    }
+        const isCollapsed = navContainer.classList.contains("collapsed");
+        toggleI.classList.toggle("bi-arrow-right", !isCollapsed);
+        toggleI.classList.toggle("bi-arrow-left", isCollapsed);
+    });
 });
