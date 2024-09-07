@@ -26,7 +26,8 @@ const GET_REVIEWS =
 "SELECT items.*, manufacturers.name AS manufacturer_name
 FROM items, manufacturers
 WHERE items.manufacturer = manufacturers.id
-AND items.name = 'Assassins Creed Valhalla'";
+AND items.name = ?";
+
 
 const GET_MANUFACTURER =
 "SELECT items.*, manufacturers.name AS manufacturer_name
@@ -62,12 +63,22 @@ Route::get(MANUFACTURER, function () {
 
 
 
-Route::get(REVIEW, function () {
+// Route::get(REVIEW, function () {
+//     $sql = GET_REVIEWS;
+//     $reviews = DB::select($sql);
+//     // dd($reviews);
+//     return view(PAGES . REVIEW)->with('reviews', $reviews);
+// });
+
+// In your web.php
+
+Route::get('/item/{name}', function ($name) {
     $sql = GET_REVIEWS;
-    $reviews = DB::select($sql);
-    // dd($reviews);
-    return view(PAGES . REVIEW)->with('reviews', $reviews);
-});
+    $item = DB::select($sql, [$name]);
+        // dd($item);
+    return view(PAGES . REVIEW)->with('reviews', $item);
+})->name('item.details');
+
 
 
 function logMessage($message)
