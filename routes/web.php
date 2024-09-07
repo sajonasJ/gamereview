@@ -33,7 +33,7 @@ const GET_MANUFACTURER =
 "SELECT items.*, manufacturers.name AS manufacturer_name
 FROM items, manufacturers
 WHERE items.manufacturer = manufacturers.id
-AND manufacturers.name = 'Ubisoft'";
+AND manufacturers.name = ?";
 
 
 $renderHomePage = function () {
@@ -55,27 +55,17 @@ Route::get(MANUFACTURER_LIST, function () {
 });
 
 
-Route::get(MANUFACTURER, function () {
+Route::get('/manufacturer/{name}', function ($name) {
     $sql = GET_MANUFACTURER;
-    $manufacturers = DB::select($sql);
+    $manufacturers = DB::select($sql, [$name]);
     return view(PAGES . MANUFACTURER)->with('manufacturers', $manufacturers);
-});
+})->name('manufacturer.details');
 
-
-
-// Route::get(REVIEW, function () {
-//     $sql = GET_REVIEWS;
-//     $reviews = DB::select($sql);
-//     // dd($reviews);
-//     return view(PAGES . REVIEW)->with('reviews', $reviews);
-// });
-
-// In your web.php
 
 Route::get('/item/{name}', function ($name) {
     $sql = GET_REVIEWS;
     $item = DB::select($sql, [$name]);
-        // dd($item);
+    // dd($item);
     return view(PAGES . REVIEW)->with('reviews', $item);
 })->name('item.details');
 
