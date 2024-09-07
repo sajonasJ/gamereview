@@ -48,21 +48,24 @@ Route::get(HOME, $renderHomePage);
 
 Route::get(MANUFACTURER_LIST, function () {
     $sql = GET_MANUFACTURERS_LIST;
-    $manufacturers = DB::select($sql);
-    dd($manufacturers);
-    return view(PAGES . MANUFACTURER_LIST)->with('manufacturers', $manufacturers);
+    $manufacturerList = DB::select($sql);
+    // dd($manufacturers);
+    return view(PAGES . MANUFACTURER_LIST)->with('manufacturerList', $manufacturerList);
 });
+
 
 Route::get(MANUFACTURER, function () {
     $sql = GET_MANUFACTURER;
-    $manufacturer = DB::select($sql);
-    dd($manufacturer);
-    return view(PAGES . MANUFACTURER);
+    $manufacturers = DB::select($sql);
+    return view(PAGES . MANUFACTURER)->with('manufacturers', $manufacturers);
 });
+
+
+
 Route::get(REVIEW, function () {
     $sql = GET_REVIEWS;
     $reviews = DB::select($sql);
-    dd($reviews);
+    // dd($reviews);
     return view(PAGES . REVIEW)->with('reviews', $reviews);
 });
 

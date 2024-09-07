@@ -10,13 +10,13 @@
     <hr>
     <ul class="nav nav-pills flex-column mb-auto">
         <li class="nav-item">
-            <a href="#" class="nav-link  text-nowrap  text-white" aria-current="page">
+            <a href="/homePage" class="nav-link  text-nowrap  text-white" aria-current="page">
                 <i class="bi bi-house-door-fill"></i>
                 <span class="nav-text">Home</span>
             </a>
         </li>
         <li>
-            <a href="#" class="nav-link text-nowrap  text-white">
+            <a href="/manufacturerListPage" class="nav-link text-nowrap  text-white">
                 <i class="bi bi-speedometer2"></i>
                 <span class="nav-text">Manufacturers</span>
             </a>

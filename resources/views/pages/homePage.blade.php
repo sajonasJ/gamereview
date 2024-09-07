@@ -11,7 +11,7 @@
 @endsection
 
 @section('content')
-    <main class='homePage-content w-100 d-flex flex-column justify-content-center align-items-center '>
+    <main class='homePage-content w-100 d-flex flex-column justify-content-start align-items-center '>
         @foreach($items as $item)
             <div class='item card rounded-4 m-3 p-4 w-75 '>
                 <div class='card-body'>
