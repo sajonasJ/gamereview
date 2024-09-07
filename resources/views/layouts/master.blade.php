@@ -17,7 +17,7 @@
 <body>
     <div class='container-fluid p-0'>
         @yield('header')
-        <main class='container-fluid d-flex flex-row min-vh-100 p-0'>
+        <main class='master-container container-fluid d-flex flex-row min-vh-100 p-0'>
             @yield('nav')
             @yield('content')
         </main>
