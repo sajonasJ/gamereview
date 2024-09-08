@@ -57,11 +57,11 @@ background-color:#bbc4c4 ;
 }
 
 
-.nav-container.collapsed .nav-link {
+/* .nav-container.collapsed .nav-link {
     pointer-events: none;
     opacity: 0.5;
     cursor: not-allowed;
-}
+} */
 .nav-container:not(.collapsed) .nav-link:hover {
     background-color: rgba(255, 255, 255, 0.1);
     color: #fff;

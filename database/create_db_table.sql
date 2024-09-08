@@ -1,8 +1,8 @@
+-- Drop tables if they exist
 drop table if exists game;
 drop table if exists user;
 drop table if exists publisher;
 drop table if exists review;
-
 
 -- Create user table
 create table user (
@@ -20,11 +20,12 @@ create table publisher (
 create table game (
     id integer not null primary key autoincrement,
     name text not null,
+    description text not null,
     publisher_id integer not null,
     foreign key (publisher_id) references publisher(id)
 );
 
--- Create reviews table
+-- Create reviews table with unique constraint on (game_id, user_id)
 create table review (
     id integer not null primary key autoincrement,
     game_id integer not null,
@@ -32,87 +33,81 @@ create table review (
     rating integer not null,
     review text not null,
     foreign key (game_id) references game(id),
-    foreign key (user_id) references user(id)
+    foreign key (user_id) references user(id),
+    unique (game_id, user_id) -- Ensure a user can only review a game once
 );
 
--- Insert data into users
+-- Insert data into users (adding more users)
 insert into user (id, username) values (1, 'sajonasj');
 insert into user (id, username) values (2, 'jonasj');
+insert into user (id, username) values (3, 'alexg');
+insert into user (id, username) values (4, 'markm');
+insert into user (id, username) values (5, 'johndoe');
+insert into user (id, username) values (6, 'janedoe');
 
 -- Insert data into publishers
 insert into publisher (id, name) values (1, 'Ubisoft');
 insert into publisher (id, name) values (2, 'Activision Blizzard');
 insert into publisher (id, name) values (3, 'Riot Games');
 
--- Insert data into games
-insert into game (id, name, publisher_id)
-values (1, 'Assassins Creed Valhalla', 1);
-insert into game (id, name, publisher_id)
-values (2, 'Assassins Creed Mirage', 1);
-insert into game (id, name, publisher_id)
-values (3, 'Star Wars Outlaws', 1);
-insert into game (id, name, publisher_id)
-values (4, 'Skull and Bones', 1);
-insert into game (id, name, publisher_id)
-values (5, 'Far Cry 6', 1);
-insert into game (id, name, publisher_id )
-values (6, 'The Crew Motorfest', 1);
+-- Insert data into games with descriptions
+insert into game (id, name, description, publisher_id)
+values (1, 'Assassins Creed Valhalla', 'An open-world action-adventure game set in the Viking era.', 1);
+insert into game (id, name, description, publisher_id)
+values (2, 'Assassins Creed Mirage', 'A stealth-focused Assassins Creed adventure.', 1);
+insert into game (id, name, description, publisher_id)
+values (3, 'Star Wars Outlaws', 'An open-world game set in the Star Wars universe.', 1);
+insert into game (id, name, description, publisher_id)
+values (4, 'Skull and Bones', 'A pirate-themed naval combat game.', 1);
+insert into game (id, name, description, publisher_id)
+values (5, 'Far Cry 6', 'A first-person shooter set in a fictional Caribbean country.', 1);
+insert into game (id, name, description, publisher_id)
+values (6, 'The Crew Motorfest', 'An open-world racing game.', 1);
 
--- Insert data into reviews
-insert into review (id, game_id, user_id, rating, review)
-values (1, 1, 1, 5, 'Amazing game!');
-insert into review (id, game_id, user_id, rating, review)
-values (2, 2, 2, 4, 'Good game, but could be better.');
-insert into review (id, game_id, user_id, rating, review)
-values (3, 3, 1, 2, 'Not really what I expected.');
-insert into review (id, game_id, user_id, rating, review)
-values (4, 4, 2, 3, 'Decent game, some issues though.');
+insert into game (id, name, description, publisher_id)
+values (7, 'World of Warcraft', 'An MMORPG set in the world of Azeroth.', 2);
+insert into game (id, name, description, publisher_id)
+values (8, 'Diablo III', 'An action role-playing game set in a dark fantasy world.', 2);
+insert into game (id, name, description, publisher_id)
+values (9, 'StarCraft', 'A real-time strategy game set in a sci-fi universe.', 2);
+insert into game (id, name, description, publisher_id)
+values (10, 'Diablo', 'The original action RPG set in a dark dungeon world.', 2);
+insert into game (id, name, description, publisher_id)
+values (11, 'Diablo II', 'A dark fantasy action RPG.', 2);
+insert into game (id, name, description, publisher_id)
+values (12, 'Warcraft III', 'A real-time strategy game with base-building.', 2);
+
+insert into game (id, name, description, publisher_id)
+values (13, 'League of Legends', 'A multiplayer online battle arena game (MOBA).', 3);
+insert into game (id, name, description, publisher_id)
+values (14, 'Teamfight Tactics', 'An auto-battler strategy game.', 3);
+insert into game (id, name, description, publisher_id)
+values (15, 'Valorant', 'A tactical first-person shooter.', 3);
+insert into game (id, name, description, publisher_id)
+values (16, 'League of Legends Wild Rift', 'A mobile version of League of Legends.', 3);
 
 
--- Insert data into items for Activision Blizzard
-insert into game (id, name, publisher_id )
-values (7, 'World of Warcraft', 2);
-insert into game (id, name, publisher_id )
-values (8, 'Diablo III', 2);
-insert into game (id, name, publisher_id )
-values (9, 'StarCraft', 2);
-insert into game (id, name, publisher_id )
-values (10, 'Diablo', 2);
-insert into game (id, name, publisher_id )
-values (11, 'Diablo II', 2);
-insert into game (id, name, publisher_id )
-values (12, 'Warcraft III', 2);
+insert into review (id, game_id, user_id, rating, review)
+values (1, 2, 1, 4, 'Great stealth gameplay, loved it!');
+insert into review (id, game_id, user_id, rating, review)
+values (2, 3, 2, 3, 'Interesting concept, but not quite what I expected.');
+insert into review (id, game_id, user_id, rating, review)
+values (3, 13, 1, 5, 'Addictive, best MOBA out there!');
 
--- Insert data into items for Riot Games
-insert into game (id, name, publisher_id)
-values (13, 'League of Legends', 3 );
-insert into game (id, name, publisher_id)
-values (14, 'Teamfight Tactics', 3);
-insert into game (id, name, publisher_id)
-values (15, 'Valorant', 3 );
-insert into game (id, name, publisher_id)
-values (16, 'League of Legends Wild Rift', 3);
 
--- Insert random reviews for Activision Blizzard games
 insert into review (id, game_id, user_id, rating, review)
-values (5, 7, 1, 5, 'A classic, can never go wrong with WoW!');
+values (4, 1, 1, 5, 'Amazing Viking experience, thoroughly enjoyed it!');
 insert into review (id, game_id, user_id, rating, review)
-values (6, 8, 2, 4, 'Diablo III was great, but I miss the darker tones.');
+values (5, 1, 2, 4, 'Beautiful world, some minor glitches.');
 insert into review (id, game_id, user_id, rating, review)
-values (7, 9, 1, 5, 'StarCraft is legendary, best strategy game ever!');
+values (6, 7, 3, 5, 'Best MMORPG, still going strong.');
 insert into review (id, game_id, user_id, rating, review)
-values (8, 10, 2, 4, 'Diablo is fun, but a bit outdated now.');
+values (7, 7, 2, 4, 'Great world, but too grindy at times.');
 insert into review (id, game_id, user_id, rating, review)
-values (9, 11, 1, 4, 'Diablo II is a timeless classic, love it!');
+values (8, 9, 1, 5, 'The best RTS ever made!');
 insert into review (id, game_id, user_id, rating, review)
-values (10, 12, 2, 5, 'Warcraft III is still a top-tier RTS!');
-
--- Insert random reviews for Riot Games games
+values (9, 9, 2, 5, 'StarCraft is a timeless classic!');
 insert into review (id, game_id, user_id, rating, review)
-values (11, 13, 1, 5, 'League of Legends is addictive, so much fun.');
+values (10, 15, 1, 5, 'Fantastic tactical gameplay.');
 insert into review (id, game_id, user_id, rating, review)
-values (12, 14, 2, 4, 'Teamfight Tactics is a great game to relax and strategize.');
-insert into review (id, game_id, user_id, rating, review)
-values (13, 15, 1, 5, 'Valorant is so intense, love the tactical gameplay.');
-insert into review (id, game_id, user_id, rating, review)
-values (14, 16, 2, 4, 'Wild Rift is a nice mobile version, but not as deep as the main game.');
+values (11, 15, 3, 4, 'Great shooter, but needs more maps.');

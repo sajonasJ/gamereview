@@ -12,3 +12,4 @@ document.addEventListener("DOMContentLoaded", () => {
         toggleI.classList.toggle("bi-arrow-left", isCollapsed);
     });
 });
+

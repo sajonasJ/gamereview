@@ -1,5 +1,5 @@
 <?php
-
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 
@@ -26,6 +26,8 @@ Route::get('/publisherListPage', function () {
 });
 
 
+
+
 Route::get('/publisherPage/{name}', function ($name) {
     $sql = "SELECT game.*, publisher.name AS publisher_name
             FROM game, publisher
@@ -48,4 +50,46 @@ Route::get('/reviewPage/{name}', function ($name) {
 
 
     return view('pages/reviewPage')->with('reviews', $reviews);
+});
+
+// Function to add a new game (using route for form submission)
+Route::post('/createItemForm', function (Request $request) {
+    // Validate the request data
+    $validated = $request->validate([
+        'game_name' => 'required|string|max:255',
+        'publisher_id' => 'required|integer',
+        'game_description' => 'required|string',
+        'rating' => 'required|integer|min:1|max:5',
+    ]);
+
+    // Insert the new game into the database
+    DB::table('game')->insert([
+        'name' => $validated['game_name'],
+        'publisher_id' => $validated['publisher_id'],
+        'description' => $validated['game_description'],
+    ]);
+
+    // Redirect back with a success message
+    return redirect()->back()->with('success', 'Game added successfully!');
+});
+
+Route::post('/createReviewForm', function (Request $request) {
+    // Validate the request data
+    $validated = $request->validate([
+        'game_id' => 'required|integer',
+        'username' => 'required|string|max:255',
+        'review' => 'required|string|max:500',
+        'rating' => 'required|integer|min:1|max:5',
+    ]);
+
+    // Insert the new review into the database
+    DB::table('review')->insert([
+        'game_id' => $validated['game_id'],
+        'username' => $validated['username'],
+        'review' => $validated['review'],
+        'rating' => $validated['rating'],
+    ]);
+
+    // Redirect back with a success message
+    return redirect()->back()->with('success', 'Review added successfully!');
 });
