@@ -58,8 +58,7 @@ Route::post('/createItemForm', function (Request $request) {
     $validated = $request->validate([
         'game_name' => 'required|string|max:255',
         'publisher_id' => 'required|integer',
-        'game_description' => 'required|string',
-        'rating' => 'required|integer|min:1|max:5',
+        'game_description' => 'required|string|max:500'
     ]);
 
     // Insert the new game into the database
@@ -77,15 +76,38 @@ Route::post('/createReviewForm', function (Request $request) {
     // Validate the request data
     $validated = $request->validate([
         'game_id' => 'required|integer',
-        'username' => 'required|string|max:255',
+       'username' => 'required|string|min:3|max:20|regex:/^[a-zA-Z0-9._]+$/',
         'review' => 'required|string|max:500',
         'rating' => 'required|integer|min:1|max:5',
     ]);
 
+    // Check if the user exists in the user table
+    $user = DB::table('user')->where('username', $validated['username'])->first();
+
+    // If user does not exist, create a new user
+    if (!$user) {
+        $user_id = DB::table('user')->insertGetId([
+            'username' => $validated['username']
+        ]);
+    } else {
+        // If user exists, use their ID
+        $user_id = $user->id;
+    }
+
+    // Check if this user already reviewed the game (enforcing unique review per game/user)
+    $existingReview = DB::table('review')
+        ->where('game_id', $validated['game_id'])
+        ->where('user_id', $user_id)
+        ->first();
+
+    if ($existingReview) {
+        return redirect()->back()->with('error', 'You have already reviewed this game.');
+    }
+
     // Insert the new review into the database
     DB::table('review')->insert([
         'game_id' => $validated['game_id'],
-        'username' => $validated['username'],
+        'user_id' => $user_id,
         'review' => $validated['review'],
         'rating' => $validated['rating'],
     ]);
