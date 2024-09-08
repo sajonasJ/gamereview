@@ -1,4 +1,4 @@
-<nav id="nav-container" class="nav-container collapsed h-25  bg-dark border flex-column p-3 text-white position-relative">
+<nav id="nav-container" class="nav-container collapsed bg-dark border flex-column p-3 text-white position-fixed z-1">
     <div class="btn-container">
         <span class="nav-text">
             <h5 class="m-0">Navigate</h5>
@@ -10,12 +10,12 @@
     <hr>
     <ul class="nav nav-pills flex-column mb-auto">
         <li class="nav-item">
-            <a href="/homePage" class="nav-link  text-nowrap  text-white" aria-current="page">
+            <a href="/homePage" class="nav-link  text-nowrap text-white" aria-current="page">
                 <i class="bi bi-house-door-fill"></i>
                 <span class="nav-text">Home</span>
             </a>
         </li>
-        <li>
+        <li class="nav-item">
             <a href="/publisherListPage" class="nav-link text-nowrap  text-white">
                 <i class="bi bi-speedometer2"></i>
                 <span class="nav-text">Manufacturers</span>

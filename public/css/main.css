@@ -14,9 +14,6 @@
     transition: opacity 0.3s ease;
 }
 
-.nav-link{
-    height: 50px;
-}
 
 .nav-container.collapsed .nav-text, 
 .nav-container.collapsed #nav-title {
@@ -31,6 +28,7 @@
     justify-content: space-between;
     align-items: center;
 }
+
 
 .nav-container.collapsed .btn-container {
     justify-content: flex-end;
@@ -49,4 +47,24 @@
 
 .master-container {
 background-color:#bbc4c4 ;
+}
+
+.header-container {
+    height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+.nav-container.collapsed .nav-link {
+    pointer-events: none;
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+.nav-container:not(.collapsed) .nav-link:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    border-radius: 8px;
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
