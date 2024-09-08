@@ -16,7 +16,7 @@
             </a>
         </li>
         <li>
-            <a href="/manufacturerListPage" class="nav-link text-nowrap  text-white">
+            <a href="/publisherListPage" class="nav-link text-nowrap  text-white">
                 <i class="bi bi-speedometer2"></i>
                 <span class="nav-text">Manufacturers</span>
             </a>
