@@ -249,7 +249,7 @@ function add_review($game_id, $user_id, $review, $rating)
 }
 
 
-Route::post('/updateReview/{id}', function ($id, Request $request) {
+Route::post('/updateReviewForm/{id}', function ($id, Request $request) {
     $review = $request->input('review');
     $rating = $request->input('rating');
 
@@ -259,9 +259,11 @@ Route::post('/updateReview/{id}', function ($id, Request $request) {
     return redirect()->back()->with('success', 'Review updated successfully!');
 });
 
-Route::post('/deleteGame/{id}', function ($id) {
-    DB::delete('DELETE FROM review WHERE game_id = ?', [$id]);
-    DB::delete('DELETE FROM game WHERE id = ?', [$id]);
+Route::post('/deleteGameForm/{name}', function ($name) {
+    $sql='DELETE FROM review WHERE game_id IN (SELECT id FROM game WHERE name = ?)';
+    $sql2='DELETE FROM game WHERE name = ?';
+    DB::delete($sql, [$name]);
+    DB::delete($sql2, [$name]);
 
     return redirect('/')->with('success', 'Game deleted successfully!');
 });

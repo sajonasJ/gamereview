@@ -1,5 +1,4 @@
 <div class="d-flex justify-content-between align-items-center w-100 p-3 bg-dark text-white">
-
     <h3 class="mb-0 cstm-h3 fw-bold text-uppercase border-bottom border-warning pb-2">
         <i class="bi bi-controller"></i> Games List
     </h3>
@@ -28,7 +27,5 @@
         <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#addGameModal" style="height: 34px;">
             <i class="bi bi-plus-circle"></i> Add Game
         </button>
-        
     </div>
-
 </div>

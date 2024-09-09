@@ -45,23 +45,17 @@
                 @foreach ($reviews as $review)
                     @if ($review->review !== null)
                         <div class="card shadow rounded-4 p-3 my-3 w-100 border-0">
-                            <div>
-                                <div class="d-flex justify-content-between align-items-start">
-                                    <blockquote class="blockquote d-flex flex-column justify-content-between pe-5 w-100 mb-4">
-                                        <p class="fs-5 fw-semibold text-dark mx-4">"{{ $review->review }}"</p>
-                                        <cite class="align-self-end" title="Reviewer">-{{ $review->username }}</cite>
-                                    </blockquote>
-                            
-                                    <button type="button" class="btn d-flex align-self-start btn-success btn-sm ms-2 w-10" data-bs-toggle="modal"
-                                        data-bs-target="#editReviewModal-{{ $review->id }}">
-                                        <i class="bi bi-pencil"></i> Edit
-                                    </button>
-                                </div>
+                            <div class="d-flex justify-content-between align-items-start">
+                                <blockquote class="blockquote d-flex flex-column justify-content-between pe-5 w-100 mb-4">
+                                    <p class="fs-5 fw-semibold text-dark mx-4">"{{ $review->review }}"</p>
+                                    <cite class="align-self-end" title="Reviewer">-{{ $review->username }}</cite>
+                                </blockquote>
+
+                                <button type="button" class="btn d-flex align-self-start btn-success btn-sm ms-2 w-10"
+                                    data-bs-toggle="modal" data-bs-target="#editReviewModal-{{ $review->id }}">
+                                    <i class="bi bi-pencil"></i> Edit
+                                </button>
                             </div>
-                            
-                         
-                                
-                          
                             <div class="d-flex justify-content-between align-items-center">
                                 <div class="review-date text-muted fst-italic">
                                     <cite title="Review Date">Review Date:
@@ -85,49 +79,7 @@
 
                         </div>
 
-                        <!-- Edit Review Modal -->
-                        <div class="modal fade" id="editReviewModal-{{ $review->id }}" tabindex="-1"
-                            aria-labelledby="editReviewModalLabel" aria-hidden="true">
-                            <div class="modal-dialog modal-dialog-centered">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="editReviewModalLabel">Edit Review</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                            aria-label="Close"></button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <!-- Edit Review Form -->
-                                        <form action="/updateReview/{{ $review->id }}" method="POST">
-                                            @csrf
-                                            <div class="mb-3">
-                                                <label for="review" class="form-label">Review</label>
-                                                <textarea class="form-control" id="review" name="review" rows="3" required>{{ $review->review }}</textarea>
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="rating" class="form-label">Rating</label>
-                                                <select class="form-select" id="rating" name="rating" required>
-                                                    <option value="1" {{ $review->rating == 1 ? 'selected' : '' }}>1
-                                                        Star</option>
-                                                    <option value="2" {{ $review->rating == 2 ? 'selected' : '' }}>2
-                                                        Stars</option>
-                                                    <option value="3" {{ $review->rating == 3 ? 'selected' : '' }}>3
-                                                        Stars</option>
-                                                    <option value="4" {{ $review->rating == 4 ? 'selected' : '' }}>4
-                                                        Stars</option>
-                                                    <option value="5" {{ $review->rating == 5 ? 'selected' : '' }}>5
-                                                        Stars</option>
-                                                </select>
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary"
-                                                    data-bs-dismiss="modal">Close</button>
-                                                <button type="submit" class="btn btn-primary">Save Changes</button>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        @include('forms.updateReviewForm')
                     @else
                         <div class="alert alert-warning d-flex justify-content-center align-items-center w-100 mt-3">
                             <strong>No reviews available yet for this game.</strong>
@@ -136,29 +88,8 @@
                 @endforeach
             </div>
         @endif
+    @include('forms.deleteGameForm')
 
-        <!-- Delete Game Modal -->
-        <div class="modal fade" id="deleteGameModal" tabindex="-1" aria-labelledby="deleteGameModalLabel"
-            aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="deleteGameModalLabel">Delete Game</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        Are you sure you want to delete this game? This action cannot be undone.
-                    </div>
-                    <div class="modal-footer">
-                        <form action="/deleteGame/{{ $reviews[0]->game_id }}" method="POST">
-                            @csrf
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                            <button type="submit" class="btn btn-danger">Delete</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
     </main>
 
     @include('layouts.toast')

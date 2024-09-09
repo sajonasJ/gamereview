@@ -29,7 +29,7 @@
                                 <i class="bi bi-star-half text-warning"></i> <!-- Half star -->
                             @endif
                             @for ($i = ceil($game->average_rating); $i < 5; $i++)
-                                <i class="bi bi-star text-muted"></i> <!-- Empty star -->
+                                <i class="bi bi-star text-warning"></i> <!-- Empty star -->
                             @endfor
                             <!-- Show the numeric rating -->
                             <span class="ms-2 text-muted">({{ number_format($game->average_rating, 2) }}/5)</span>
