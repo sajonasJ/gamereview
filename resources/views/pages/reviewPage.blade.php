@@ -44,17 +44,24 @@
 
                 @foreach ($reviews as $review)
                     @if ($review->review !== null)
-                        <div class="card shadow-sm rounded-4 p-3 my-3 w-100 border-0">
-                            <button type="button" class="btn btn-outline-secondary btn-sm ms-2" data-bs-toggle="modal"
-                                data-bs-target="#editReviewModal-{{ $review->id }}">
-                                <i class="bi bi-pencil"></i> Edit
-                            </button <blockquote class="blockquote mb-4">
-                            <p class="fs-5 fw-semibold text-dark mx-4">"{{ $review->review }}"</p>
-
-                            </blockquote>
-                            <footer class="blockquote-footer d-flex justify-content-end mb-3 me-5">
-                                <cite title="Reviewer">{{ $review->username }}</cite>
-                            </footer>
+                        <div class="card shadow rounded-4 p-3 my-3 w-100 border-0">
+                            <div>
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <blockquote class="blockquote d-flex flex-column justify-content-between pe-5 w-100 mb-4">
+                                        <p class="fs-5 fw-semibold text-dark mx-4">"{{ $review->review }}"</p>
+                                        <cite class="align-self-end" title="Reviewer">-{{ $review->username }}</cite>
+                                    </blockquote>
+                            
+                                    <button type="button" class="btn d-flex align-self-start btn-success btn-sm ms-2 w-10" data-bs-toggle="modal"
+                                        data-bs-target="#editReviewModal-{{ $review->id }}">
+                                        <i class="bi bi-pencil"></i> Edit
+                                    </button>
+                                </div>
+                            </div>
+                            
+                         
+                                
+                          
                             <div class="d-flex justify-content-between align-items-center">
                                 <div class="review-date text-muted fst-italic">
                                     <cite title="Review Date">Review Date:
