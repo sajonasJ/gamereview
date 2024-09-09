@@ -10,7 +10,7 @@
                 <!-- Add Review Form -->
                 <form action="/createReviewForm" method="POST">
                     @csrf
-                    <input type="hidden" id="game_id" value="$review">
+                    <input type="hidden" name="game_id" value="{{ $reviews[0]->game_id }}">
                     <div class="mb-3">
                         <label for="username" class="form-label">Your Name</label>
                         <input type="text" class="form-control" id="username" name="username" placeholder="Enter your name" required>

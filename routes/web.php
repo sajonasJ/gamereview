@@ -4,7 +4,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 
-require_once app_path('Functions/ItemFunctions.php');
 
 // Function to sort the $games array by a specified field ($sortBy) in either ascending ('asc') or descending ('desc') order.
 // The & allows in-place modification.
@@ -184,7 +183,7 @@ function add_publisher($name)
 
 
 Route::post('/createReviewForm', function (Request $request) {
-    // Custom validation
+
     $game_id = $request->input('game_id');
     $username = $request->input('username');
     $review = $request->input('review');
