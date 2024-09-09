@@ -25,10 +25,10 @@
                 </select>
             </div>
         </form>
-        <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#addGameModal"
-            style="height: 34px;">
-            Add Game
+        <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#addGameModal" style="height: 34px;">
+            <i class="bi bi-plus-circle"></i> Add Game
         </button>
+        
     </div>
 
 </div>

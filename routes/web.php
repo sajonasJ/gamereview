@@ -247,3 +247,21 @@ function add_review($game_id, $user_id, $review, $rating)
     DB::insert($sql, [$game_id, $user_id, $review, $rating]);
     return DB::getPdo()->lastInsertId();
 }
+
+
+Route::post('/updateReview/{id}', function ($id, Request $request) {
+    $review = $request->input('review');
+    $rating = $request->input('rating');
+
+    $sql = "UPDATE review SET review = ?, rating = ? WHERE id = ?";
+    DB::update($sql, [$review, $rating, $id]);
+
+    return redirect()->back()->with('success', 'Review updated successfully!');
+});
+
+Route::post('/deleteGame/{id}', function ($id) {
+    DB::delete('DELETE FROM review WHERE game_id = ?', [$id]);
+    DB::delete('DELETE FROM game WHERE id = ?', [$id]);
+
+    return redirect('/')->with('success', 'Game deleted successfully!');
+});
