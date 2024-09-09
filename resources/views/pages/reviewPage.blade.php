@@ -21,17 +21,14 @@
             </button>
         </div>
 
-        
-
-
         @if (count($reviews) > 0)
             <div class="card item card text-decoration-none rounded-4 m-3 p-4 w-75">
-                <h2 class="card-title mb-4">{{ $reviews[0]->name }}</h2>
-                <div class="d-flex flex-shrink-1">
+                <h1 class="card-title mb-4">{{ $reviews[0]->name }}</h1>
+                <h4 class="d-flex flex-shrink-1">
                     <a href="/publisherPage/{{ $reviews[0]->publisher_name }}" class="text-decoration-none">
                         <p class="card-subtitle mb-2 text-decoration-none">Publisher: {{ $reviews[0]->publisher_name }}</p>
                     </a>
-                </div>
+                </h4>
                 <p class="card-subtitle"><strong>Description:</strong> {{ $reviews[0]->description }}</p>
 
                 @foreach ($reviews as $review)

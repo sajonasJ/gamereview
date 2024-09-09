@@ -17,14 +17,32 @@
                 <i class="bi bi-controller"></i> Publishers Page
             </h3>
         </div>
-        <div class="card-body item card rounded-4 m-3 p-4 w-75 text-decoration-none text-dark" >
-            <h2 class="card-title mb-4">{{ $publisher[0]->publisher_name }}</h2>
+        <div class="card-body card rounded-4 m-3 p-4 w-75 d-flex align-items-center text-decoration-none text-dark">
+            <h1 class="card-title mb-4">{{ $publisher[0]->publisher_name }}</h2>
 
             @foreach ($publisher as $game)
-                <a href="/reviewPage/{{$game->name}}" class="item card rounded-4 m-3 p-4 w-100 text-decoration-none text-dark">
+                <a href="/reviewPage/{{ $game->name }}"
+                    class="card d-flex justify-content-center m-3 w-100 text-decoration-none text-dark">
                     <div class="card-body">
-                        <p class="card-subtitle">Game: {{ $game->name }}</p>
+                        <h5 class="card-title">Game: {{ $game->name }}</h5>
+                        <div class="rating">
+                            <span class="me-2"><strong>Rating:</strong></span>
+                            @for ($i = 0; $i < floor($game->average_rating); $i++)
+                                <i class="bi bi-star-fill text-warning"></i>
+                            @endfor
+
+                            @if ($game->average_rating - floor($game->average_rating) >= 0.5)
+                                <i class="bi bi-star-half text-warning"></i>
+                            @endif
+
+                            @for (; $i < 5; $i++)
+                                <i class="bi bi-star text-warning"></i>
+                            @endfor
+                            <span class="ms-2">({{ number_format($game->average_rating, 2) }} / 5)</span>
+                        </div>
                     </div>
+
+
                 </a>
             @endforeach
         </div>

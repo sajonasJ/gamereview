@@ -24,20 +24,22 @@
                     <h2 class='card-title mb-4'>{{ $publisher->publisher_name }}</h2>
                     <div class="d-flex justify-content-start">
                         @if ($publisher->average_rating)
-                            <div class="rating">
-                                <span class="me-2"><strong>Average Games Rating:</strong></span>
-                                @for ($i = 0; $i < floor($publisher->average_rating); $i++)
-                                    <i class="bi bi-star-fill text-warning"></i>
-                                @endfor
-                                @if ($publisher->average_rating - floor($publisher->average_rating) >= 0.5)
-                                    <i class="bi bi-star-half text-warning"></i>
-                                    @php $i++; @endphp
-                                @endif
-                                @for (; $i < 5; $i++)
-                                    <i class="bi bi-star text-warning"></i>
-                                @endfor
-                                <span>({{ number_format($publisher->average_rating, 2) }} / 5)</span>
-                            </div>
+                        <div class="rating">
+                            <span class="me-2"><strong>Average Games Rating:</strong></span>
+                            @for ($i = 0; $i < floor($publisher->average_rating); $i++)
+                                <i class="bi bi-star-fill text-warning"></i>
+                            @endfor
+                            @if ($publisher->average_rating - floor($publisher->average_rating) >= 0.5)
+                                <i class="bi bi-star-half text-warning"></i>
+                                @php $i++; @endphp <!-- Increment $i for the half star -->
+                            @endif
+
+                            @for (; $i < 5; $i++)
+                                <i class="bi bi-star text-muted"></i>
+                            @endfor
+    
+                            <span>({{ number_format($publisher->average_rating, 2) }} / 5)</span>
+                        </div>
                         @else
                             No ratings yet
                         @endif

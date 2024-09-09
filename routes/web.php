@@ -65,14 +65,17 @@ Route::get('/publisherListPage', function () {
 
 
 Route::get('/publisherPage/{name}', function ($name) {
-    $sql = "SELECT game.*, publisher.name AS publisher_name
-            FROM game, publisher
-            WHERE game.publisher_id = publisher.id
-            AND publisher.name = ?";
+    $sql = "SELECT game.*, publisher.name AS publisher_name, AVG(review.rating) AS average_rating
+            FROM game
+            JOIN publisher ON game.publisher_id = publisher.id
+            LEFT JOIN review ON game.id = review.game_id
+            WHERE publisher.name = ?
+            GROUP BY game.id, publisher.name";
     $publisher = DB::select($sql, [$name]);
     // dd($publisher);
     return view('pages/publisherPage')->with('publisher', $publisher);
 })->name('publisher.details');
+
 
 
 Route::get('/reviewPage/{name}', function ($name) {
