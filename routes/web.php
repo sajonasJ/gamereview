@@ -49,10 +49,15 @@ $renderHomePage = function (Request $request) {
 Route::get('/', $renderHomePage);
 Route::get('/homePage', $renderHomePage);
 Route::get('/publisherListPage', function () {
-    $sql = "SELECT name
-            FROM publisher";
+    $sql = "SELECT publisher.name AS publisher_name, AVG(review.rating) AS average_rating
+            FROM publisher
+            JOIN game ON game.publisher_id = publisher.id
+            LEFT JOIN review ON game.id = review.game_id
+            GROUP BY publisher.name";
     $publisherList = DB::select($sql);
+
     // dd($publisherList);
+
     return view('pages/publisherListPage')->with('publisherList', $publisherList);
 });
 

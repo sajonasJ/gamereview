@@ -19,8 +19,6 @@
         </div>
 
 
-
-        <!-- Display game name and publisher name just once before the loop -->
         @if (count($reviews) > 0)
             <div class="card item card text-decoration-none rounded-4 m-3 p-4 w-75">
                 <h2 class="card-title mb-4">{{ $reviews[0]->name }}</h2>
@@ -31,35 +29,38 @@
                 </div>
                 <p class="card-subtitle"><strong>Description:</strong> {{ $reviews[0]->description }}</p>
 
-                <!-- Loop through reviews and display them -->
                 @foreach ($reviews as $review)
                     @if ($review->review !== null)
-                    <div class="card shadow-sm rounded-4 p-3 my-3 w-100 border-0">
-                        <blockquote class="blockquote mb-4">
-                            <p class="fs-5 fw-semibold text-dark mx-4">"{{ $review->review }}"</p>
-                        </blockquote>
-                        <footer class="blockquote-footer d-flex justify-content-end mb-3 me-5">
-                            <cite title="Reviewer">{{ $review->username }}</cite>
-                        </footer>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div class="review-date text-muted fst-italic">
-                                <cite title="Review Date">Review Date: {{ date('F j, Y', strtotime($review->created_at)) }}</cite>
+                        <div class="card shadow-sm rounded-4 p-3 my-3 w-100 border-0">
+                            <blockquote class="blockquote mb-4">
+                                <p class="fs-5 fw-semibold text-dark mx-4">"{{ $review->review }}"</p>
+                            </blockquote>
+                            <footer class="blockquote-footer d-flex justify-content-end mb-3 me-5">
+                                <cite title="Reviewer">{{ $review->username }}</cite>
+                            </footer>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="review-date text-muted fst-italic">
+                                    <cite title="Review Date">Review Date:
+                                        {{ date('F j, Y', strtotime($review->created_at)) }}</cite>
 
-                             </div>
-                            <div class="rating">
-                                <span class="me-2">Rating:</span>
-                                @for ($i = 0; $i < $review->rating; $i++)
-                                    <i class="bi bi-star-fill text-warning"></i>
-                                @endfor
-                                @for ($i = $review->rating; $i < 5; $i++)
-                                    <i class="bi bi-star text-muted"></i>
-                                @endfor
+                                </div>
+                                <div class="rating">
+                                    <span class="me-2">Rating:</span>
+                                    @for ($i = 0; $i < floor($review->rating); $i++)
+                                        <i class="bi bi-star-fill text-warning"></i>
+                                    @endfor
+                                    @if ($review->rating - floor($review->rating) >= 0.5)
+                                        <i class="bi bi-star-half text-warning"></i>
+                                        @php $i++; @endphp
+                                    @endif
+                                    @for (; $i < 5; $i++)
+                                        <i class="bi bi-star text-warning"></i>
+                                    @endfor
+                                    <span class="ms-2">({{ number_format($review->rating, 2) }} / 5)</span>
+                                </div>
+                                
                             </div>
-                      
                         </div>
-                    </div>
-                    
-                    
                     @else
                         <div class="alert alert-warning d-flex justify-content-center align-items-center w-100 mt-3">
                             <strong>No reviews available yet for this game.</strong>
