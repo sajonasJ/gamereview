@@ -25,6 +25,19 @@
                 <div class='card-body'>
                     <h2 class='card-title mb-4'>{{ $game->name }}</h2>
                     <p class='card-subtitle'><strong>Publisher:</strong> {{ $game->publisher_name }}</p>
+                    <div class="d-flex justify-content-between">
+                        <div class="rating">
+                            <span class="me-2"><strong>Average Rating:</strong></span>
+                            @for ($i = 0; $i < $game->average_rating; $i++)
+                                <i class="bi bi-star-fill text-warning"></i>
+                            @endfor
+                            @for ($i = $game->average_rating; $i < 5; $i++)
+                                <i class="bi bi-star text-muted"></i>
+                            @endfor
+                        </div>
+                        <p class='card-text'><strong>Reviews:</strong> {{ $game->review_count }}</p>
+                    </div>
+              
                 </div>
             </a>
         @endforeach

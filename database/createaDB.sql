@@ -32,9 +32,10 @@ create table review (
     user_id integer not null,
     rating integer not null,
     review text not null,
+    created_at timestamp default current_timestamp,
     foreign key (game_id) references game(id),
     foreign key (user_id) references user(id),
-    unique (game_id, user_id) -- Ensure a user can only review a game once
+    unique (game_id, user_id)
 );
 
 -- Insert data into users (adding more users)
@@ -87,27 +88,28 @@ insert into game (id, name, description, publisher_id)
 values (16, 'League of Legends Wild Rift', 'A mobile version of League of Legends.', 3);
 
 
-insert into review (id, game_id, user_id, rating, review)
-values (1, 2, 1, 4, 'Great stealth gameplay, loved it!');
-insert into review (id, game_id, user_id, rating, review)
-values (2, 3, 2, 3, 'Interesting concept, but not quite what I expected.');
-insert into review (id, game_id, user_id, rating, review)
-values (3, 13, 1, 5, 'Addictive, best MOBA out there!');
+-- Insert reviews with random created_at dates
+insert into review (id, game_id, user_id, rating, review, created_at)
+values (1, 2, 1, 4, 'Great stealth gameplay, loved it!', datetime('2021-01-15 10:00:00'));
+insert into review (id, game_id, user_id, rating, review, created_at)
+values (2, 3, 2, 3, 'Interesting concept, but not quite what I expected.', datetime('2021-02-20 14:35:00'));
+insert into review (id, game_id, user_id, rating, review, created_at)
+values (3, 13, 1, 5, 'Addictive, best MOBA out there!', datetime('2022-03-10 16:45:00'));
 
+insert into review (id, game_id, user_id, rating, review, created_at)
+values (4, 1, 1, 5, 'Amazing Viking experience, thoroughly enjoyed it!', datetime('2022-04-12 11:20:00'));
+insert into review (id, game_id, user_id, rating, review, created_at)
+values (5, 1, 2, 4, 'Beautiful world, some minor glitches.', datetime('2022-05-18 09:50:00'));
+insert into review (id, game_id, user_id, rating, review, created_at)
+values (6, 7, 3, 5, 'Best MMORPG, still going strong.', datetime('2022-06-23 13:30:00'));
+insert into review (id, game_id, user_id, rating, review, created_at)
+values (7, 7, 2, 4, 'Great world, but too grindy at times.', datetime('2022-07-05 15:15:00'));
+insert into review (id, game_id, user_id, rating, review, created_at)
+values (8, 9, 1, 5, 'The best RTS ever made!', datetime('2022-08-12 17:05:00'));
+insert into review (id, game_id, user_id, rating, review, created_at)
+values (9, 9, 2, 5, 'StarCraft is a timeless classic!', datetime('2022-09-01 12:45:00'));
+insert into review (id, game_id, user_id, rating, review, created_at)
+values (10, 15, 1, 5, 'Fantastic tactical gameplay.', datetime('2023-01-05 19:25:00'));
+insert into review (id, game_id, user_id, rating, review, created_at)
+values (11, 15, 3, 4, 'Great shooter, but needs more maps.', datetime('2023-02-14 18:10:00'));
 
-insert into review (id, game_id, user_id, rating, review)
-values (4, 1, 1, 5, 'Amazing Viking experience, thoroughly enjoyed it!');
-insert into review (id, game_id, user_id, rating, review)
-values (5, 1, 2, 4, 'Beautiful world, some minor glitches.');
-insert into review (id, game_id, user_id, rating, review)
-values (6, 7, 3, 5, 'Best MMORPG, still going strong.');
-insert into review (id, game_id, user_id, rating, review)
-values (7, 7, 2, 4, 'Great world, but too grindy at times.');
-insert into review (id, game_id, user_id, rating, review)
-values (8, 9, 1, 5, 'The best RTS ever made!');
-insert into review (id, game_id, user_id, rating, review)
-values (9, 9, 2, 5, 'StarCraft is a timeless classic!');
-insert into review (id, game_id, user_id, rating, review)
-values (10, 15, 1, 5, 'Fantastic tactical gameplay.');
-insert into review (id, game_id, user_id, rating, review)
-values (11, 15, 3, 4, 'Great shooter, but needs more maps.');
