@@ -60,7 +60,7 @@
                                     @endfor
                                     <span class="ms-2">({{ number_format($review->rating, 2) }} / 5)</span>
                                 </div>
-                                
+
                             </div>
                         </div>
                     @else

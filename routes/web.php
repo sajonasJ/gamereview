@@ -79,11 +79,12 @@ Route::get('/publisherPage/{name}', function ($name) {
 
 Route::get('/reviewPage/{id}', function ($id) {
     $sql = "SELECT game.*, review.*, publisher.name AS publisher_name, user.username
-            FROM game
-            JOIN publisher ON game.publisher_id = publisher.id
-            LEFT JOIN review ON game.id = review.game_id
-            LEFT JOIN user ON review.user_id = user.id
-            WHERE game.id = ?";
+    FROM game
+    JOIN publisher ON game.publisher_id = publisher.id
+    LEFT JOIN review ON game.id = review.game_id
+    LEFT JOIN user ON review.user_id = user.id
+    WHERE game.id = ?
+    ORDER BY review.created_at DESC";
     $reviews = DB::select($sql, [$id]);
     // dd($reviews);
     return view('pages/reviewPage')->with('reviews', $reviews);
@@ -134,36 +135,21 @@ function validateGameForm(Request $request)
     if (!$game_name || !$publisher_name || !$description) {
         return 'All fields are required.';
     }
-       // Check if game name and publisher name have at least 2 characters
-       if (strlen($game_name) < 2) {
-        return 'Game name must be at least 2 characters long.';
+    if (strlen($game_name) < 2 || strlen($game_name) > 30) {
+        return 'Game name must be between 2 and 30 characters long.';
     }
-
-    if (strlen($publisher_name) < 2) {
-        return 'Publisher name must be at least 2 characters long.';
+    if (strlen($publisher_name) < 2 || strlen($publisher_name) > 30) {
+        return 'Publisher name must be between 2 and 30 characters long.';
     }
-
     if (preg_match('/[-_+"]/', $game_name)) {
         return 'Game name cannot contain the following characters: - _ + "';
     }
-
     if (preg_match('/[-_+"]/', $publisher_name)) {
         return 'Publisher name cannot contain the following characters: - _ + "';
     }
-
-
-    if (strlen($game_name) > 30) {
-        return 'Game name is too long.';
-    }
-
-    if (strlen($publisher_name) > 30) {
-        return 'Publisher name is too long.';
-    }
-
     if (strlen($description) > 500) {
-        return 'Description is too long.';
+        return 'Description is too long. Maximum length is 500 characters.';
     }
-
     return true;
 }
 
@@ -183,17 +169,24 @@ function add_publisher($name)
 
 
 Route::post('/createReviewForm', function (Request $request) {
+    $original_username = $request->input('username');
+    $username = removeNumbers($original_username);
 
-    $game_id = $request->input('game_id');
-    $username = $request->input('username');
-    $review = $request->input('review');
-    $rating = $request->input('rating');
-
-    // Validate input
-    if (!$game_id || !$username || !$review || !$rating) {
-        return redirect()->back()->with('error', 'All fields are required.');
+    $username_message = '';
+    if ($original_username !== $username) {
+        $username_message = " The username was modified to: $username.";
     }
 
+    // Call the validation function
+    $validationResult = validateReviewForm($request, $username);
+
+    if ($validationResult !== true) {
+        return redirect()->back()->with('error', $validationResult);
+    }
+
+    $game_id = $request->input('game_id');
+    $review = $request->input('review');
+    $rating = $request->input('rating');
 
     $user = DB::select('SELECT * FROM user WHERE username = ?', [$username]);
     if (!$user) {
@@ -205,21 +198,41 @@ Route::post('/createReviewForm', function (Request $request) {
         $user_id = $user[0]->id;
     }
 
-    // Check if the user already reviewed the game
-    $existingReview = DB::select('SELECT * FROM review WHERE game_id = ? AND user_id = ?', [$game_id, $user_id]);
 
+    $existingReview = DB::select('SELECT * FROM review WHERE game_id = ? AND user_id = ?', [$game_id, $user_id]);
     if ($existingReview) {
         return redirect()->back()->with('error', 'You have already reviewed this game.');
     }
 
-    // Insert the review
+
     $review_id = add_review($game_id, $user_id, $review, $rating);
     if ($review_id) {
-        return redirect("reviewPage/$game_id");
+        return redirect("reviewPage/$game_id")->with('success', 'Review added successfully!' . $username_message);
     } else {
         return redirect()->back()->with('error', 'Error adding review.');
     }
 });
+
+// Validation function for review form inputs
+function validateReviewForm(Request $request, $username)
+{
+    $game_id = $request->input('game_id');
+    $review = $request->input('review');
+    $rating = $request->input('rating');
+
+    if (!$game_id || !$username || !$review || !$rating) {
+        return 'All fields are required.';
+    }
+    if (strlen($username) < 3 || strlen($username) > 15) {
+        return 'Username must be at least 3 characters long and less than 15 characters long.';
+    }
+    return true;
+}
+
+function removeNumbers($username)
+{
+    return preg_replace('/[0-9]+/', '', $username);
+}
 
 function add_user($username)
 {
@@ -227,7 +240,6 @@ function add_user($username)
     DB::insert($sql, [$username]);
     return DB::getPdo()->lastInsertId();
 }
-
 
 function add_review($game_id, $user_id, $review, $rating)
 {
