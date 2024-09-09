@@ -12,11 +12,16 @@
 
 @section('content')
     <main class="reviewPage-content w-100 d-flex flex-column justify-content-start align-items-center">
-        <div class="d-flex justify-content-end w-100 pe-4 p-2 bg-dark text-white">
+        <div class="d-flex justify-content-between align-items-center w-100 p-3 bg-dark text-white">
+            <h3 class="mb-0 cstm-h3 fw-bold text-uppercase border-bottom border-warning pb-2">
+                <i class="bi bi-controller"></i> Game Page
+            </h3>
             <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#addReviewModal">
                 Add Review
             </button>
         </div>
+
+        
 
 
         @if (count($reviews) > 0)
