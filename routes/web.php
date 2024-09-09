@@ -6,7 +6,25 @@ use Illuminate\Support\Facades\Route;
 
 require_once app_path('Functions/ItemFunctions.php');
 
-$renderHomePage = function () {
+// Function to sort the $games array by a specified field ($sortBy) in either ascending ('asc') or descending ('desc') order.
+// The & allows in-place modification.
+function sortGames(&$games, $sortBy, $order = 'asc')
+{
+    // The function compares two objects ($a and $b) based on the value of $sortBy.
+    usort($games, function ($a, $b) use ($sortBy, $order) {
+        if ($a->$sortBy == $b->$sortBy) {
+            return 0;
+        }
+        if ($order === 'asc') {
+            return ($a->$sortBy < $b->$sortBy) ? -1 : 1;
+        } else {
+            return ($a->$sortBy > $b->$sortBy) ? -1 : 1;
+        }
+    });
+}
+
+
+$renderHomePage = function (Request $request) {
     $sql = "SELECT game.id, game.name, publisher.name AS publisher_name, 
                    AVG(review.rating) AS average_rating, 
                    COUNT(review.id) AS review_count
@@ -15,13 +33,21 @@ $renderHomePage = function () {
             LEFT JOIN review ON game.id = review.game_id
             GROUP BY game.id, game.name, publisher.name";
     $games = DB::select($sql);
-    // dd($games);
+
+
+    $sortBy = $request->get('sort_by');
+    $order = $request->get('order');
+
+    if ($sortBy && $order) {
+        sortGames($games, $sortBy, $order);
+    }
+
     return view('pages/homePage')->with('games', $games);
 };
 
+
 Route::get('/', $renderHomePage);
 Route::get('/homePage', $renderHomePage);
-
 Route::get('/publisherListPage', function () {
     $sql = "SELECT name
             FROM publisher";
