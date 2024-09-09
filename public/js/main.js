@@ -13,3 +13,17 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
+document.addEventListener('DOMContentLoaded', function() {
+    var errorToastElement = document.getElementById('errorToast');
+    var successToastElement = document.getElementById('successToast');
+
+    if (errorToastElement) {
+        var errorToast = new bootstrap.Toast(errorToastElement);
+        errorToast.show();
+    }
+
+    if (successToastElement) {
+        var successToast = new bootstrap.Toast(successToastElement);
+        successToast.show();
+    }
+});

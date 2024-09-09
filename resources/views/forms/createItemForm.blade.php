@@ -8,7 +8,7 @@
             </div>
             <div class="modal-body">
                 <!-- Add Game Form -->
-                <form action="/addGame" method="POST">
+                <form action="/createItemForm" method="POST">
                     @csrf
                     <div class="mb-3">
                         <label for="game-name" class="form-label">Game Title</label>
@@ -20,7 +20,7 @@
                     </div>
                     <div class="mb-3">
                         <label for="description" class="form-label">Description</label>
-                        <textarea class="form-control" id="description" name="description" rows="3" placeholder="Enter game description" required></textarea>
+                        <textarea class="form-control" id="description" name="game_description" rows="3" placeholder="Enter game description" required></textarea>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>

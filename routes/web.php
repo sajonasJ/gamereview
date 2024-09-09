@@ -78,72 +78,119 @@ Route::get('/publisherPage/{name}', function ($name) {
 
 
 
-Route::get('/reviewPage/{name}', function ($name) {
+Route::get('/reviewPage/{id}', function ($id) {
     $sql = "SELECT game.*, review.*, publisher.name AS publisher_name, user.username
             FROM game
             JOIN publisher ON game.publisher_id = publisher.id
             LEFT JOIN review ON game.id = review.game_id
             LEFT JOIN user ON review.user_id = user.id
-            WHERE game.name = ?";
-    $reviews = DB::select($sql, [$name]);
+            WHERE game.id = ?";
+    $reviews = DB::select($sql, [$id]);
     // dd($reviews);
     return view('pages/reviewPage')->with('reviews', $reviews);
 });
 
 Route::post('/createItemForm', function (Request $request) {
-    $validated = $request->validate([
-        'game_name' => 'required|string|max:255',
-        'publisher_id' => 'required|integer',
-        'game_description' => 'required|string|max:500'
-    ]);
+    $game_name = $request->input('game_name');
+    $publisher_name = $request->input('publisher_name');
+    $description = $request->input('game_description');
 
-    DB::table('game')->insert([
-        'name' => $validated['game_name'],
-        'publisher_id' => $validated['publisher_id'],
-        'description' => $validated['game_description'],
-    ]);
-
-
-    return redirect()->back()->with('success', 'Game added successfully!');
-});
-
-Route::post('/createReviewForm', function (Request $request) {
-
-    $validated = $request->validate([
-        'game_id' => 'required|integer',
-        'username' => 'required|string|min:3|max:20|regex:/^[a-zA-Z0-9._]+$/',
-        'review' => 'required|string|max:500',
-        'rating' => 'required|integer|min:1|max:5',
-    ]);
-
-    $user = DB::table('user')->where('username', $validated['username'])->first();
-
-
-    if (!$user) {
-        $user_id = DB::table('user')->insertGetId([
-            'username' => $validated['username']
-        ]);
-    } else {
-
-        $user_id = $user->id;
+    if (!$game_name || !$publisher_name || !$description) {
+        return redirect()->back()->with('error', 'All fields are required.');
     }
 
-    $existingReview = DB::table('review')
-        ->where('game_id', $validated['game_id'])
-        ->where('user_id', $user_id)
-        ->first();
+    $existingGame = DB::select('SELECT * FROM game WHERE name = ?', [$game_name]);
+
+    if ($existingGame) {
+        return redirect()->back()->with('error', 'Game already exists.');
+    }
+
+    $publisher = DB::select('SELECT * FROM publisher WHERE name = ?', [$publisher_name]);
+
+    if (!$publisher) {
+        $publisher_id = add_publisher($publisher_name);
+        if (!$publisher_id) {
+            return redirect()->back()->with('error', 'Error adding publisher.');
+        }
+    } else {
+        $publisher_id = $publisher[0]->id;
+    }
+
+    $game_id = add_game($game_name, $description, $publisher_id);
+    if ($game_id) {
+        return redirect("reviewPage/$game_id")->with('success', 'Game added successfully!');
+    } else {
+        return redirect()->back()->with('error', 'Error adding game.');
+    }
+});
+
+
+function add_game($name, $description, $publisher_id)
+{
+    $sql = "INSERT INTO game (name, description, publisher_id) VALUES (?, ?, ?)";
+    DB::insert($sql, [$name, $description, $publisher_id]);
+    return DB::getPdo()->lastInsertId();
+}
+
+function add_publisher($name)
+{
+    $sql = "INSERT INTO publisher (name) VALUES (?)";
+    DB::insert($sql, [$name]);
+    return DB::getPdo()->lastInsertId();
+}
+
+
+Route::post('/createReviewForm', function (Request $request) {
+    // Custom validation
+    $game_id = $request->input('game_id');
+    $username = $request->input('username');
+    $review = $request->input('review');
+    $rating = $request->input('rating');
+
+    // Validate input
+    if (!$game_id || !$username || !$review || !$rating) {
+        return redirect()->back()->with('error', 'All fields are required.');
+    }
+
+
+    $user = DB::select('SELECT * FROM user WHERE username = ?', [$username]);
+    if (!$user) {
+        $user_id = add_user($username);
+        if (!$user_id) {
+            return redirect()->back()->with('error', 'Error adding user.');
+        }
+    } else {
+        $user_id = $user[0]->id;
+    }
+
+    // Check if the user already reviewed the game
+    $existingReview = DB::select('SELECT * FROM review WHERE game_id = ? AND user_id = ?', [$game_id, $user_id]);
 
     if ($existingReview) {
         return redirect()->back()->with('error', 'You have already reviewed this game.');
     }
 
-
-    DB::table('review')->insert([
-        'game_id' => $validated['game_id'],
-        'user_id' => $user_id,
-        'review' => $validated['review'],
-        'rating' => $validated['rating'],
-    ]);
-
-    return redirect()->back()->with('success', 'Review added successfully!');
+    // Insert the review
+    $review_id = add_review($game_id, $user_id, $review, $rating);
+    if ($review_id) {
+        return redirect("reviewPage/$game_id");
+    } else {
+        die('Error adding review.');
+        return redirect()->back()->with('error', 'Error adding review.');
+    }
 });
+
+function add_user($username)
+{
+    $sql = "INSERT INTO user (username) VALUES (?)";
+    DB::insert($sql, [$username]);
+    return DB::getPdo()->lastInsertId();
+}
+
+
+function add_review($game_id, $user_id, $review, $rating)
+{
+    $sql = "INSERT INTO review (game_id, user_id, review, rating) VALUES (?, ?, ?, ?)";
+    DB::insert($sql, [$game_id, $user_id, $review, $rating]);
+    return DB::getPdo()->lastInsertId();
+}

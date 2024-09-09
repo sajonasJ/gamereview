@@ -72,7 +72,7 @@
             </div>
         @endif
     </main>
-
+    @include('layouts.toast')
     @include('forms.createReviewForm')
 @endsection
 
