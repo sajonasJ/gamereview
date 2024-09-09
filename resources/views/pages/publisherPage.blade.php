@@ -21,7 +21,7 @@
             <h1 class="card-title mb-4">{{ $publisher[0]->publisher_name }}</h2>
 
                 @foreach ($publisher as $game)
-                    <a href="/reviewPage/{{ $game->name }}"
+                    <a href="/reviewPage/{{ $game->id }}"
                         class="card d-flex justify-content-center m-3 w-100 text-decoration-none text-dark">
                         <div class="card-body">
                             <h5 class="card-title">Game: {{ $game->name }}</h5>
