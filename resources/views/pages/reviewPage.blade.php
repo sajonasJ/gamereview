@@ -47,10 +47,15 @@
                         <div class="card shadow rounded-4 p-3 my-3 w-100 border-0">
                             <div class="d-flex justify-content-between align-items-start">
                                 <blockquote class="blockquote d-flex flex-column justify-content-between pe-5 w-100 mb-4">
-                                    <p class="fs-5 fw-semibold text-dark mx-4">"{{ $review->review }}"</p>
+                                    @if ($review->flagged)
+                                        <i class="bi bi-flag-fill text-danger" title="Potential Fake Review">Potential
+                                            Fake</i>
+                                    @endif
+                                    <p class="fs-5 fw-semibold text-dark mx-4">
+                                        "{{ $review->review }}"
+                                    </p>
                                     <cite class="align-self-end" title="Reviewer">-{{ $review->username }}</cite>
                                 </blockquote>
-
                                 <button type="button" class="btn d-flex align-self-start btn-success btn-sm ms-2 w-10"
                                     data-bs-toggle="modal" data-bs-target="#editReviewModal-{{ $review->id }}">
                                     <i class="bi bi-pencil"></i> Edit
@@ -76,9 +81,7 @@
                                     <span class="ms-2">({{ number_format($review->rating, 2) }} / 5)</span>
                                 </div>
                             </div>
-
                         </div>
-
                         @include('forms.updateReviewForm')
                     @else
                         <div class="alert alert-warning d-flex justify-content-center align-items-center w-100 mt-3">
@@ -88,14 +91,12 @@
                 @endforeach
             </div>
         @endif
-    @include('forms.deleteGameForm')
-
+        @include('forms.deleteGameForm')
     </main>
 
     @include('layouts.toast')
     @include('forms.createReviewForm')
 @endsection
-
 
 @section('footer')
     @include('layouts.footer')

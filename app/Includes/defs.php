@@ -23,9 +23,9 @@ function sortGames(&$games, $sortBy, $order = 'asc')
 
 function validateGameForm(Request $request)
 {
-    $game_name = $request->input('game_name');
-    $publisher_name = $request->input('publisher_name');
-    $description = $request->input('game_description');
+    $game_name = htmlspecialchars($request->input('game_name'));
+    $publisher_name = htmlspecialchars($request->input('publisher_name'));
+    $description = htmlspecialchars($request->input('game_description'));
 
     if (!$game_name || !$publisher_name || !$description) {
         return 'All fields are required.';
@@ -51,9 +51,9 @@ function validateGameForm(Request $request)
 // Validation function for review form inputs
 function validateReviewForm(Request $request, $username)
 {
-    $game_id = $request->input('game_id');
-    $review = $request->input('review');
-    $rating = $request->input('rating');
+    $game_id = htmlspecialchars($request->input('game_id'));
+    $review = htmlspecialchars($request->input('review'));
+    $rating = htmlspecialchars($request->input('rating'));
 
     if (!$game_id || !$username || !$review || !$rating) {
         return 'All fields are required.';
@@ -63,6 +63,76 @@ function validateReviewForm(Request $request, $username)
     }
     return true;
 }
+
+
+function validateReviewText($review, $username)
+{
+    // Check if the review is too long or too short
+    if (strlen($review) > 500 || strlen($review) < 3) {
+        return ['flagged' => true, 'message' => 'Review must be between 3 and 500 characters.'];
+    }
+
+    // Check if the review contains a link (e.g., http, https, or www)
+    if (preg_match('/(https?:\/\/|www\.)/i', $review)) {
+        return ['flagged' => true, 'message' => 'Links are not allowed in the review.'];
+    }
+
+    // Check for repetitive words (e.g., the same word repeated consecutively)
+    if (preg_match('/\b(\w+)\b(?:\s+\1\b){2,}/i', $review)) {
+        return ['flagged' => true, 'message' => 'Repetitive language is not allowed in the review.'];
+    }
+
+    // Check if the same review text already exists in the database
+    $duplicateReview = DB::select('SELECT * FROM review WHERE review = ?', [$review]);
+
+    if (!empty($duplicateReview)) {
+        return ['flagged' => true, 'message' => 'This exact review already exists in the system.'];
+    }
+
+    // Check if the user has been consistently giving 5-star or 0-star ratings
+    $userRatings = DB::select(
+        'SELECT rating FROM review WHERE user_id = (SELECT id FROM user WHERE username = ?)', 
+        [$username]
+    );
+
+    if (count($userRatings) >= 4) {
+        $allFiveStars = array_reduce($userRatings, fn($carry, $item) => $carry && ($item->rating == 5), true);
+        $allZeroStars = array_reduce($userRatings, fn($carry, $item) => $carry && ($item->rating == 0), true);
+
+        if ($allFiveStars || $allZeroStars) {
+            return ['flagged' => true, 'message' => 'You have been giving only extreme ratings (either all 5 stars or all 0 stars). Please consider a more balanced rating.'];
+        }
+    }
+
+    // Use Laravel's now() helper to get the current timestamp
+    $now = now();
+
+    // Check if the user has posted 3 or more reviews in the past hour
+    $oneHourAgo = $now->subHour();
+    $recentReviews = DB::select(
+        'SELECT COUNT(*) as review_count FROM review WHERE user_id = (SELECT id FROM user WHERE username = ?) AND created_at >= ?',
+        [$username, $oneHourAgo]
+    );
+
+    if ($recentReviews[0]->review_count >= 3) {
+        return ['flagged' => true, 'message' => 'You have posted 3 or more reviews in the past hour.'];
+    }
+
+    // Check if the user has posted more than 5 reviews in the past day
+    $oneDayAgo = $now->subDay();
+    $dailyReviews = DB::select(
+        'SELECT COUNT(*) as review_count FROM review WHERE user_id = (SELECT id FROM user WHERE username = ?) AND created_at >= ?',
+        [$username, $oneDayAgo]
+    );
+
+    if ($dailyReviews[0]->review_count >= 5) {
+        return ['flagged' => true, 'message' => 'You have posted more than 5 reviews in the past day.'];
+    }
+
+    // If everything is fine, return no flag
+    return ['flagged' => false, 'message' => ''];
+}
+
 
 function removeNumbers($username)
 {
@@ -76,10 +146,10 @@ function add_user($username)
     return DB::getPdo()->lastInsertId();
 }
 
-function add_review($game_id, $user_id, $review, $rating)
+function add_review($game_id, $user_id, $review, $rating, $flagged)
 {
-    $sql = "INSERT INTO review (game_id, user_id, review, rating) VALUES (?, ?, ?, ?)";
-    DB::insert($sql, [$game_id, $user_id, $review, $rating]);
+    $sql = "INSERT INTO review (game_id, user_id, review, rating, flagged) VALUES (?, ?, ?, ?, ?)";
+    DB::insert($sql, [$game_id, $user_id, $review, $rating, $flagged]);
     return DB::getPdo()->lastInsertId();
 }
 

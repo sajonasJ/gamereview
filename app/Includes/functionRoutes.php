@@ -53,7 +53,7 @@ $renderPublisherPage = function ($name) {
 
 $renderReviewPage = function ($id) {
     $sql = "SELECT game.id AS game_id, game.name, game.description, game.publisher_id, 
-    review.id AS id, review.user_id, review.rating, review.review, review.created_at, 
+    review.id AS id, review.user_id, review.rating, review.review, review.created_at, review.flagged,
     publisher.name AS publisher_name, user.username
     FROM game
     JOIN publisher ON game.publisher_id = publisher.id
@@ -74,9 +74,9 @@ $renderCreateItemForm = function (Request $request) {
         return redirect()->back()->with('error', $validationResult);
     }
 
-    $game_name = $request->input('game_name');
-    $publisher_name = $request->input('publisher_name');
-    $description = $request->input('game_description');
+    $game_name = htmlspecialchars($request->input('game_name'));
+    $publisher_name = htmlspecialchars($request->input('publisher_name'));
+    $description = htmlspecialchars($request->input('game_description'));
 
     $existingGame = DB::select('SELECT * FROM game WHERE name = ?', [$game_name]);
 
@@ -103,8 +103,8 @@ $renderCreateItemForm = function (Request $request) {
     }
 };
 
-$renderCreateReviewForm = function(Request $request) {
-    $original_username = $request->input('username');
+$renderCreateReviewForm = function (Request $request) {
+    $original_username = htmlspecialchars($request->input('username'));
     $username = removeNumbers($original_username);
 
     $username_message = '';
@@ -115,19 +115,23 @@ $renderCreateReviewForm = function(Request $request) {
 
     // Get the username stored in the session
     $sessionUsername = session('username');
-    if ($request->input('username') !== $sessionUsername) {
+    if (htmlspecialchars($request->input('username')) !== $sessionUsername) {
         return redirect()->back()->with('error', 'Username mismatch.');
     }
 
+    // Validate form inputs
     $validateResult = validateReviewForm($request, $username);
     if ($validateResult !== true) {
         return redirect()->back()->with('error', $validateResult);
     }
 
-    $game_id = $request->input('game_id');
-    $review = $request->input('review');
-    $rating = $request->input('rating');
+    $game_id = htmlspecialchars($request->input('game_id'));
+    $review = htmlspecialchars($request->input('review'));
+    $rating = htmlspecialchars($request->input('rating'));
 
+    $validation = validateReviewText($review, $username);
+
+    // Proceed with the logic for adding review
     $user = DB::select('SELECT * FROM user WHERE username = ?', [$username]);
     if (!$user) {
         $user_id = add_user($username);
@@ -138,14 +142,14 @@ $renderCreateReviewForm = function(Request $request) {
         $user_id = $user[0]->id;
     }
 
-
     $existingReview = DB::select('SELECT * FROM review WHERE game_id = ? AND user_id = ?', [$game_id, $user_id]);
     if ($existingReview) {
         return redirect()->back()->with('error', 'You have already reviewed this game.');
     }
 
+    // Use add_review function to add the review
+    $review_id = add_review($game_id, $user_id, $review, $rating, $validation['flagged']);
 
-    $review_id = add_review($game_id, $user_id, $review, $rating);
     if ($review_id) {
         return redirect("reviewPage/$game_id")->with('success', 'Review added successfully!' . $username_message);
     } else {
@@ -153,9 +157,10 @@ $renderCreateReviewForm = function(Request $request) {
     }
 };
 
-$renderUpdateReviewForm = function($id, Request $request) {
-    $review = $request->input('review');
-    $rating = $request->input('rating');
+
+$renderUpdateReviewForm = function ($id, Request $request) {
+    $review = htmlspecialchars($request->input('review'));
+    $rating = htmlspecialchars($request->input('rating'));
 
     $sql = "UPDATE review SET review = ?, rating = ? WHERE id = ?";
     DB::update($sql, [$review, $rating, $id]);
@@ -163,7 +168,7 @@ $renderUpdateReviewForm = function($id, Request $request) {
     return redirect()->back()->with('success', 'Review updated successfully!');
 };
 
-$renderDeleteGameForm = function($name){
+$renderDeleteGameForm = function ($name) {
     $sql = 'DELETE FROM review WHERE game_id IN (SELECT id FROM game WHERE name = ?)';
     $sql2 = 'DELETE FROM game WHERE name = ?';
     DB::delete($sql, [$name]);
