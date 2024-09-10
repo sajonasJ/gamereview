@@ -78,13 +78,16 @@ Route::get('/publisherPage/{name}', function ($name) {
 
 
 Route::get('/reviewPage/{id}', function ($id) {
-    $sql = "SELECT game.*, review.*, publisher.name AS publisher_name, user.username
+    $sql = "SELECT game.id AS game_id, game.name, game.description, game.publisher_id, 
+    review.id AS id, review.user_id, review.rating, review.review, review.created_at, 
+    publisher.name AS publisher_name, user.username
     FROM game
     JOIN publisher ON game.publisher_id = publisher.id
     LEFT JOIN review ON game.id = review.game_id
     LEFT JOIN user ON review.user_id = user.id
     WHERE game.id = ?
     ORDER BY review.created_at DESC";
+
     $reviews = DB::select($sql, [$id]);
     // dd($reviews);
     return view('pages/reviewPage')->with('reviews', $reviews);
