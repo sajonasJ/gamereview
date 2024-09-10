@@ -3,11 +3,11 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-// Function to sort the $games array by a specified field ($sortBy) in either ascending ('asc') or descending ('desc') order.
-// The & allows in-place modification.
+
+//Sort Games Function the & passes the array by reference = default to ascending
 function sortGames(&$games, $sortBy, $order = 'asc')
 {
-
+    // Sort the $games array using usort with a custom comparison function
     usort($games, function ($a, $b) use ($sortBy, $order) {
         if ($a->$sortBy == $b->$sortBy) {
             return 0;
@@ -20,28 +20,39 @@ function sortGames(&$games, $sortBy, $order = 'asc')
     });
 }
 
-
+// Validation function for game form inputs
 function validateGameForm(Request $request)
 {
     $game_name = htmlspecialchars($request->input('game_name'));
     $publisher_name = htmlspecialchars($request->input('publisher_name'));
     $description = htmlspecialchars($request->input('game_description'));
 
+    // Check if any required fields are missing
     if (!$game_name || !$publisher_name || !$description) {
         return 'All fields are required.';
     }
+
+    // Validate game name length (must be between 2 and 30 characters)
     if (strlen($game_name) < 2 || strlen($game_name) > 30) {
         return 'Game name must be between 2 and 30 characters long.';
     }
+
+    // Validate publisher name length (must be between 2 and 30 characters)
     if (strlen($publisher_name) < 2 || strlen($publisher_name) > 30) {
         return 'Publisher name must be between 2 and 30 characters long.';
     }
+
+    // Ensure game name does not contain certain characters (- _ + ")
     if (preg_match('/[-_+"]/', $game_name)) {
         return 'Game name cannot contain the following characters: - _ + "';
     }
+
+    // Ensure publisher name does not contain certain characters (- _ + ")
     if (preg_match('/[-_+"]/', $publisher_name)) {
         return 'Publisher name cannot contain the following characters: - _ + "';
     }
+
+    // Validate description length (maximum 500 characters)
     if (strlen($description) > 500) {
         return 'Description is too long. Maximum length is 500 characters.';
     }
@@ -55,16 +66,19 @@ function validateReviewForm(Request $request, $username)
     $review = htmlspecialchars($request->input('review'));
     $rating = htmlspecialchars($request->input('rating'));
 
+    // Check if any required fields are missing
     if (!$game_id || !$username || !$review || !$rating) {
         return 'All fields are required.';
     }
+
+    // Validate username length (must be between 3 and 15 characters)
     if (strlen($username) < 3 || strlen($username) > 15) {
         return 'Username must be at least 3 characters long and less than 15 characters long.';
     }
     return true;
 }
 
-
+// Validation function for review text
 function validateReviewText($review, $username)
 {
     // Check if the review is too long or too short
@@ -82,63 +96,43 @@ function validateReviewText($review, $username)
         return ['flagged' => true, 'message' => 'Repetitive language is not allowed in the review.'];
     }
 
+    // Check for words with repeating letters anywhere in the word
+    if (preg_match('/\b\w*([a-zA-Z])\1{2,}\w*\b/', $review)) {
+        return ['flagged' => true, 'message' => 'Words with excessive repeated letters are not allowed in the review.'];
+    }
+
     // Check if the same review text already exists in the database
     $duplicateReview = DB::select('SELECT * FROM review WHERE review = ?', [$review]);
-
     if (!empty($duplicateReview)) {
         return ['flagged' => true, 'message' => 'This exact review already exists in the system.'];
     }
 
     // Check if the user has been consistently giving 5-star or 0-star ratings
     $userRatings = DB::select(
-        'SELECT rating FROM review WHERE user_id = (SELECT id FROM user WHERE username = ?)', 
+        'SELECT rating FROM review WHERE user_id = (SELECT id FROM user WHERE username = ?)',
         [$username]
     );
 
     if (count($userRatings) >= 4) {
-        $allFiveStars = array_reduce($userRatings, fn($carry, $item) => $carry && ($item->rating == 5), true);
-        $allZeroStars = array_reduce($userRatings, fn($carry, $item) => $carry && ($item->rating == 0), true);
+        $allFives = array_reduce($userRatings, fn($carry, $item) => $carry && ($item->rating == 5), true);
+        $allOnes = array_reduce($userRatings, fn($carry, $item) => $carry && ($item->rating == 1), true);
 
-        if ($allFiveStars || $allZeroStars) {
+        if ($allFives || $allOnes) {
             return ['flagged' => true, 'message' => 'You have been giving only extreme ratings (either all 5 stars or all 0 stars). Please consider a more balanced rating.'];
         }
     }
 
-    // Use Laravel's now() helper to get the current timestamp
-    $now = now();
-
-    // Check if the user has posted 3 or more reviews in the past hour
-    $oneHourAgo = $now->subHour();
-    $recentReviews = DB::select(
-        'SELECT COUNT(*) as review_count FROM review WHERE user_id = (SELECT id FROM user WHERE username = ?) AND created_at >= ?',
-        [$username, $oneHourAgo]
-    );
-
-    if ($recentReviews[0]->review_count >= 3) {
-        return ['flagged' => true, 'message' => 'You have posted 3 or more reviews in the past hour.'];
-    }
-
-    // Check if the user has posted more than 5 reviews in the past day
-    $oneDayAgo = $now->subDay();
-    $dailyReviews = DB::select(
-        'SELECT COUNT(*) as review_count FROM review WHERE user_id = (SELECT id FROM user WHERE username = ?) AND created_at >= ?',
-        [$username, $oneDayAgo]
-    );
-
-    if ($dailyReviews[0]->review_count >= 5) {
-        return ['flagged' => true, 'message' => 'You have posted more than 5 reviews in the past day.'];
-    }
-
-    // If everything is fine, return no flag
     return ['flagged' => false, 'message' => ''];
 }
 
 
+// Function to replace numbers from a string
 function removeNumbers($username)
 {
     return preg_replace('/[0-9]+/', '', $username);
 }
 
+// Function to add a new user to the database, returns the user ID
 function add_user($username)
 {
     $sql = "INSERT INTO user (username) VALUES (?)";
@@ -146,6 +140,7 @@ function add_user($username)
     return DB::getPdo()->lastInsertId();
 }
 
+// Function to add a new review to the database, returns the review ID
 function add_review($game_id, $user_id, $review, $rating, $flagged)
 {
     $sql = "INSERT INTO review (game_id, user_id, review, rating, flagged) VALUES (?, ?, ?, ?, ?)";
@@ -153,6 +148,7 @@ function add_review($game_id, $user_id, $review, $rating, $flagged)
     return DB::getPdo()->lastInsertId();
 }
 
+// Function to add a new game to the database, returns the game ID
 function add_game($name, $description, $publisher_id)
 {
     $sql = "INSERT INTO game (name, description, publisher_id) VALUES (?, ?, ?)";
@@ -160,6 +156,7 @@ function add_game($name, $description, $publisher_id)
     return DB::getPdo()->lastInsertId();
 }
 
+// Function to add a new publisher to the database, returns the publisher ID
 function add_publisher($name)
 {
     $sql = "INSERT INTO publisher (name) VALUES (?)";

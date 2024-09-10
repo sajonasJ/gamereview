@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title', 'Welcome Page')
+@section('title', 'Publisher Page')
 
 @section('header')
     @include('layouts.header')
@@ -27,6 +27,7 @@
                             <h5 class="card-title">Game: {{ $game->name }}</h5>
                             <div class="rating">
                                 <span class="me-2"><strong>Rating:</strong></span>
+
                                 @for ($i = 0; $i < floor($game->average_rating); $i++)
                                     <i class="bi bi-star-fill text-warning"></i>
                                 @endfor
@@ -38,6 +39,7 @@
                                 @for (; $i < 5; $i++)
                                     <i class="bi bi-star text-warning"></i>
                                 @endfor
+
                                 <span class="ms-2">({{ number_format($game->average_rating, 2) }} / 5)</span>
                             </div>
                         </div>
@@ -45,6 +47,7 @@
                 @endforeach
         </div>
     </main>
+
     @include('layouts.toast')
 @endsection
 

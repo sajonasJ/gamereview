@@ -7,13 +7,11 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <!-- Add Review Form -->
                 <form action="/createReviewForm" method="POST">
                     @csrf
                     <input type="hidden" name="game_id" value="{{ $reviews[0]->game_id }}">
 
                     @if (session('username'))
-                        <!-- Username is already stored in the session -->
                         <div class="mb-3">
                             <label for="username" class="form-label">Your Name</label>
                             <input type="text" class="form-control" id="username" name="username"
@@ -21,7 +19,6 @@
                             <input type="hidden" name="username" value="{{ session('username') }}">
                         </div>
                     @else
-                        <!-- Username is not in the session, ask for it -->
                         <div class="mb-3">
                             <label for="username" class="form-label">Your Name</label>
                             <input type="text" class="form-control" id="username" name="username"

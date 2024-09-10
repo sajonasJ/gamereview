@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title', 'Welcome Page')
+@section('title', 'Publishers List Page')
 
 @section('header')
     @include('layouts.header')
@@ -17,18 +17,22 @@
                 <i class="bi bi-controller"></i> Publishers List
             </h3>
         </div>
+
         @foreach ($publisherList as $publisher)
             <a href="/publisherPage/{{ $publisher->publisher_name }}"
                 class='item card rounded-4 m-3 p-4 w-75 text-decoration-none text-dark'>
                 <div class='card-body'>
                     <h2 class='card-title mb-4'>{{ $publisher->publisher_name }}</h2>
                     <div class="d-flex justify-content-start">
+
                         @if ($publisher->average_rating)
                             <div class="rating">
                                 <span class="me-2"><strong>Average Games Rating:</strong></span>
+
                                 @for ($i = 0; $i < floor($publisher->average_rating); $i++)
                                     <i class="bi bi-star-fill text-warning"></i>
                                 @endfor
+
                                 @if ($publisher->average_rating - floor($publisher->average_rating) >= 0.5)
                                     <i class="bi bi-star-half text-warning"></i>
                                     @php $i++; @endphp <!-- Increment $i for the half star -->
