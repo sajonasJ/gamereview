@@ -51,7 +51,7 @@ function validateGameForm(Request $request)
 // Validation function for review form inputs
 function validateReviewForm(Request $request, $username)
 {
-    $game_id = $request->input('id');
+    $game_id = $request->input('game_id');
     $review = $request->input('review');
     $rating = $request->input('rating');
 
