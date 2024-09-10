@@ -178,6 +178,12 @@ Route::post('/createReviewForm', function (Request $request) {
     }
     session(['username' => $username]);
 
+    // Get the username stored in the session
+    $sessionUsername = session('username');
+    if ($request->input('username') !== $sessionUsername) {
+        return redirect()->back()->with('error', 'Username mismatch.');
+    }
+
     $validateResult = validateReviewForm($request, $username);
     if ($validateResult !== true) {
         return redirect()->back()->with('error', $validateResult);
@@ -259,8 +265,8 @@ Route::post('/updateReviewForm/{id}', function ($id, Request $request) {
 });
 
 Route::post('/deleteGameForm/{name}', function ($name) {
-    $sql='DELETE FROM review WHERE game_id IN (SELECT id FROM game WHERE name = ?)';
-    $sql2='DELETE FROM game WHERE name = ?';
+    $sql = 'DELETE FROM review WHERE game_id IN (SELECT id FROM game WHERE name = ?)';
+    $sql2 = 'DELETE FROM game WHERE name = ?';
     DB::delete($sql, [$name]);
     DB::delete($sql2, [$name]);
 
