@@ -176,12 +176,11 @@ Route::post('/createReviewForm', function (Request $request) {
     if ($original_username !== $username) {
         $username_message = " The username was modified to: $username.";
     }
+    session(['username' => $username]);
 
-    // Call the validation function
-    $validationResult = validateReviewForm($request, $username);
-
-    if ($validationResult !== true) {
-        return redirect()->back()->with('error', $validationResult);
+    $validateResult = validateReviewForm($request, $username);
+    if ($validateResult !== true) {
+        return redirect()->back()->with('error', $validateResult);
     }
 
     $game_id = $request->input('game_id');

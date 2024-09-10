@@ -41,17 +41,12 @@
                                 <span class="ms-2">({{ number_format($game->average_rating, 2) }} / 5)</span>
                             </div>
                         </div>
-
-
                     </a>
                 @endforeach
         </div>
     </main>
     @include('layouts.toast')
 @endsection
-
-
-
 
 @section('footer')
     @include('layouts.footer')
